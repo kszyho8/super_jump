@@ -17,17 +17,22 @@
 
 Player player; // deklaracja postaci
 std::vector <Platform> platforms; // deklaracja kontenera z platformami
-std::fstream config;
+std::fstream config;  // plik konfiguracyjny do wczytania tekstur platform
 
 sf::Font font;
 sf::Text textScore("0", font);
 
+/* inicjalizacja nowej gry */
 void init(){
-    gameState = 2; // status gry (gra rozpoczêta/trwaj¹ca)
+    gameState = 2; // status gry (gra rozpoczÃªta/trwajÂ¹ca)
+
+    /* ustawienei punktÃ³w */
     score = 0;
     textScore.setString(std::to_string(score));
     textScore.setPosition(sf::Vector2f(20, 40));
-    player.init();
+    player.init(); // inicjalizacja postaci
+
+    /* inicjalizacja platform */
     platforms[0].init(true);
     for(int i=1; i<platforms.size(); i++)
     {
@@ -35,15 +40,8 @@ void init(){
     }
 }
 
-int main()
+void loadConfig(std::string s)
 {
-    srand(time(NULL));
-
-    /* wczytanie pliku konfiguracyjnego z wyborem koloru platformy */
-    config.open("config.cfg", std::ios::in);
-    std::string s;
-    std::getline(config, s);
-    config.close();
     switch(std::stoi(s))
     {
     case 1:
@@ -59,10 +57,35 @@ int main()
         schody2 = 60;
         break;
     }
+}
+
+int main()
+{
+    srand(time(NULL));
+
+    /* wczytanie pliku konfiguracyjnego z wyborem koloru platformy */
+    std::string s = "4";
+    config.open("config.cfg", std::ios::in);
+    if ( !config.is_open() )
+    {
+        config.close();
+        config.open("config.cfg", std::ios::out);
+        config<<"4\n/*	liczba otpowiadajÄ…ca za teksturÄ™ platformy\n*	1 - pierwsza tekstura ( brÄ…zowa )\n*   	2 - druga tekstua ( fioletowa )\n*	3 - trzecia tekstura (niebieska)\n* 	4 - trzecia tekstura ( pajÄ™czyna )/";
+        config.close();
+        config.open("config.cfg", std::ios::in);
+        std::getline(config, s);
+        config.close();
+    }
+    else
+    {
+        std::getline(config, s);
+        config.close();
+    }
+    loadConfig(s);
 
     /* stworzenie okna */
     sf::RenderWindow window(sf::VideoMode(SCREEN_WIDTH, SCREEN_HEIGHT), "Super jump");
-    window.setFramerateLimit(60); // iloœæ klatek na sekundê
+    window.setFramerateLimit(60); // iloÅ“Ã¦ klatek na sekundÃª
 
     sf::Texture texture_left, texture_middle, texture_right; // deklaracja tekstur platform
 
@@ -78,12 +101,12 @@ int main()
     textScore.setStyle(sf::Text::Bold);
     textScore.setColor(sf::Color::White);
 
-    /* wczytanie tekstur platformy pocz¹tkowej */
+    /* wczytanie tekstur platformy poczÂ¹tkowej */
     texture_left.loadFromFile("img/platformy.png", sf::IntRect(0, schody2, SIZE, SIZE));
     texture_middle.loadFromFile("img/platformy.png", sf::IntRect(20, schody2, SIZE, SIZE));
     texture_right.loadFromFile("img/platformy.png", sf::IntRect(40, schody2, SIZE, SIZE));
 
-    /* stworzenie platformy pocz¹tkowej */
+    /* stworzenie platformy poczÂ¹tkowej */
     Platform p1(texture_left, texture_middle, texture_right, true);
     platforms.push_back(p1); // dodanie platformy do kontenera
 
@@ -97,7 +120,7 @@ int main()
     */
 
     /*
-    * nieeleganckie rozwi¹zanie, powy¿szy zakomentowany kod nie chcia³ wspó³pracowaæ w ¿aden sposób
+    * nieeleganckie rozwiÂ¹zanie, powyÂ¿szy zakomentowany kod nie chciaÂ³ wspÃ³Â³pracowaÃ¦ w Â¿aden sposÃ³b
     */
     Platform p2(texture_left, texture_middle, texture_right, false, platforms[0].yPos());
     platforms.push_back(p2);
@@ -118,7 +141,7 @@ int main()
     platforms.push_back(p7);
     /* koniec zgrozy */
 
-    /* inicjalizacja t³a */
+    /* inicjalizacja tÂ³a */
     sf::Texture backgroundTexture;
     backgroundTexture.setSmooth(true);
     sf::Sprite backgroundSprite;
@@ -126,7 +149,7 @@ int main()
     backgroundSprite.setTexture(backgroundTexture);
     backgroundSprite.setPosition(sf::Vector2f(0, 0));
 
-    /* inicjalizacja ciemych cegie³ lewych */
+    /* inicjalizacja ciemych cegieÂ³ lewych */
     sf::Texture wallLTexture;
     wallLTexture.setSmooth(true);
     sf::Sprite wallLSprite;
@@ -134,7 +157,7 @@ int main()
     wallLSprite.setTexture(wallLTexture);
     wallLSprite.setPosition(sf::Vector2f(0, 0));
 
-    /* inicjalizacja ciemych cegie³ prawych */
+    /* inicjalizacja ciemych cegieÂ³ prawych */
     sf::Texture wallRTexture;
     wallRTexture.setSmooth(true);
     sf::Sprite wallRSprite;
@@ -151,6 +174,7 @@ int main()
     graffitiS.setPosition(sf::Vector2f(400, 200));
     graffitiS.setRotation(30);
 
+    /* inicjalizacja menu */
     sf::Texture menuTexture;
     menuTexture.setSmooth(true);
     sf::Sprite menuSprite;
@@ -158,6 +182,7 @@ int main()
     menuSprite.setTexture(menuTexture);
     menuSprite.setPosition(sf::Vector2f(SCREEN_WIDTH/2-(490/2), SCREEN_HEIGHT/2-(292/2)));
 
+    /* inicjalizacja pauzy */
     sf::Texture pauseTexture;
     pauseTexture.setSmooth(true);
     sf::Sprite pauseSprite;
@@ -165,6 +190,7 @@ int main()
     pauseSprite.setTexture(pauseTexture);
     pauseSprite.setPosition(sf::Vector2f(SCREEN_WIDTH/2-(490/2), SCREEN_HEIGHT/2-(292/2)));
 
+    /* inicjalizacja koÅ„ca gry gry */
     sf::Texture overTexture;
     overTexture.setSmooth(true);
     sf::Sprite overSprite;
@@ -172,7 +198,7 @@ int main()
     overSprite.setTexture(overTexture);
     overSprite.setPosition(sf::Vector2f(SCREEN_WIDTH/2-(490/2), SCREEN_HEIGHT/2-(292/2)));
 
-    /* g³ówna pêtla gry */
+    /* gÂ³Ã³wna pÃªtla gry */
     while(window.isOpen()){
         sf::Event event;
         while(window.pollEvent(event))
@@ -232,7 +258,7 @@ int main()
             }
         }
 
-        //UPDATE POCZ¥TEK
+        /* UPDATE POCZÂ¥TEK */
         switch(gameState)
         {
             case 1:
@@ -241,7 +267,7 @@ int main()
                 {
                 int col = 0; // licznik kolizji
 
-                /* sprawdzenie kolizji z ka¿d¹ platform¹ */
+                /* sprawdzenie kolizji z kaÂ¿dÂ¹ platformÂ¹ */
                 for(size_t i=0; i<platforms.size(); i++)
                 {
                     if(player.xPos() + player.getWidth() > platforms[i].xPos() && player.xPos() < platforms[i].xPos() + platforms[i].getWidth())
@@ -284,10 +310,10 @@ int main()
             case 4:
                 break;
         }
-        //UPDATE KOINEC
+        /* UPDATE KOINEC */
 
-        //DRAW POCZ¥TEK
-        window.clear(sf::Color(255, 255, 255)); // bia³e t³o pod teksturami
+        /* DRAW POCZÂ¥TEK */
+        window.clear(sf::Color(255, 255, 255)); // biaÂ³e tÂ³o pod teksturami
         window.draw(backgroundSprite);
         window.draw(wallRSprite);
         window.draw(wallLSprite);
@@ -298,7 +324,7 @@ int main()
                 window.draw(menuSprite);
                 break;
             default:
-                for(int i=0; i<platforms.size(); i++) // wyœwietlenie wszystjich platform
+                for(int i=0; i<platforms.size(); i++) // wyÅ“wietlenie wszystjich platform
                 {
                     platforms[i].draw(window);
                 }
@@ -322,7 +348,7 @@ int main()
         }
 
         window.display();
-        //DRAW KOINEC
+        /* DRAW KOINEC */
     }
 
     return 0;

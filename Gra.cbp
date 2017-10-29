@@ -56,6 +56,7 @@
 		<Unit filename="Game.cpp" />
 		<Unit filename="Platform.h" />
 		<Unit filename="Player.h" />
+		<Unit filename="README.md" />
 		<Unit filename="conf.h" />
 		<Unit filename="config.cfg" />
 		<Unit filename="font/Action_Man.ttf" />

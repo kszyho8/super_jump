@@ -2,18 +2,14 @@
 
 #define SCREEN_WIDTH 1024
 #define SCREEN_HEIGHT 600
-// odsuniêcie od krawêdzi
-#define AIR_GAP 5
-// wysokoœæ i szerokoœæ platformy lewe zakoñczenie, œrodek, prawe zakoñczenie
-#define SIZE 20
-// wartoœæ przyspieszenia grafitacji
-#define VEL 0.40f
-// szerokoœæ od boków okna (ciemne ceg³y)
-#define OFFSET 200
+#define AIR_GAP 5 // odsuniÃªcie od krawÃªdzi
+#define SIZE 20 // wysokoÅ“Ã¦ i szerokoÅ“Ã¦ platformy lewe zakoÃ±czenie, Å“rodek, prawe zakoÃ±czenie
+#define VEL 0.40f // wartoÅ“Ã¦ przyspieszenia grawitacji
+#define OFFSET 200 // szerokoÅ“Ã¦ od bokÃ³w okna (ciemne cegÂ³y)
 
 /* ZMIENNE GLOBALNE */
 int gameState = 1; // status gry: 0-koniec 1-menu 2-gra 3-pauza 4-game over
-int total; // aktualna liczba platform (wyko¿ystanych)
-int score; // iloœæ zdobytych punktów
-int schody2 = 40; // jaka tekstura platfor
+int total; // aktualna liczba platform (wykoÂ¿ystanych)
+int score; // iloÅ“Ã¦ zdobytych punktÃ³w
+int schody2 = 40; // domyÅ›lna tekstura platform
 /* ZMIENNE GLOBALNE  KONIEC*/
